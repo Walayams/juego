@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Juego de Carreras Simple</title>
+  <style>
+    body {
+      margin: 0;
+      background: #333;
+      overflow: hidden;
+    }
+    #juego {
+      width: 400px;
+      height: 600px;
+      background: #555;
+      margin: 20px auto;
+      position: relative;
+      overflow: hidden;
+      border: 5px solid #fff;
+    }
+    #carro {
+      width: 50px;
+      height: 100px;
+      background: red;
+      position: absolute;
+      bottom: 20px;
+      left: 175px;
+      border-radius: 10px;
+    }
+    .obstaculo {
+      width: 50px;
+      height: 100px;
+      background: black;
+      position: absolute;
+      top: -120px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="juego">
+    <div id="carro"></div>
+  </div>
+
+  <script>
+    const juego = document.getElementById("juego");
+    const carro = document.getElementById("carro");
+    let carroX = 175;
+    let velocidad = 2;
+
+    // Mover el carro con flechas izquierda/derecha
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "ArrowLeft" && carroX > 0) {
+        carroX -= 25;
+      } else if (event.key === "ArrowRight" && carroX < 350) {
+        carroX += 25;
+      }
+      carro.style.left = carroX + "px";
+    });
+
+    // Crear y mover obstáculos
+    function crearObstaculo() {
+      const obstaculo = document.createElement("div");
+      obstaculo.classList.add("obstaculo");
+      obstaculo.style.left = Math.floor(Math.random() * 8) * 50 + "px";
+      juego.appendChild(obstaculo);
+
+      let posY = -100;
+      const intervalo = setInterval(() => {
+        if (posY > 600) {
+          clearInterval(intervalo);
+          juego.removeChild(obstaculo);
+        } else {
+          posY += velocidad;
+          obstaculo.style.top = posY + "px";
+
+          // Detección de colisión
+          if (
+            posY + 100 > 480 &&
+            parseInt(obstaculo.style.left) === carroX
+          ) {
+            alert("¡Colisión! Fin del juego.");
+            location.reload();
+          }
+        }
+      }, 10);
+    }
+
+    // Generar obstáculos cada 1 segundo
+    setInterval(crearObstaculo, 1000);
+  </script>
+</body>
+</html>
